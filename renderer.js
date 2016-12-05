@@ -4,20 +4,40 @@ const {dialog} = require('electron').remote;
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
-let timeout = 1000 / 10;
+/**
+ * @desc Options object used for controlling how the sprite is displayed
+ * @type {Object}
+ */
+let options = {
+  fps: 10,
+  height: 32,
+  width: 32
+};
+
 let tick = 0;
-let spriteWidth = 32;
 
 ctx.imageSmoothingEnabled = false;
 
-canvas.width = 32;
-canvas.height = 32;
+canvas.width = options.width;
+canvas.height = options.height;
 
-canvas.style.width = '128px';
-canvas.style.height = '128px';
+canvas.style.width = options.width * 4 + 'px';
+canvas.style.height = options.height * 4 + 'px';
 
 let sprite = null;
 let spritePath = null;
+
+const setWidth = (width) => {
+  options.width = width;
+  canvas.width = options.width;
+  canvas.style.width = options.width * 4 + 'px';
+};
+
+const setHeight = (height) => {
+  options.height = height;
+  canvas.height = options.height;
+  canvas.style.height = options.height * 4 + 'px';
+};
 
 const watchFile = (path) => {
   fs.watchFile(path, () => {
@@ -56,10 +76,10 @@ const main = () => {
   if (sprite) {
     ctx.drawImage(
       sprite,
-      spriteWidth * tick,
+      options.width * tick,
       0,
-      32,
-      32,
+      options.width,
+      options.height,
       0,
       0,
       canvas.width,
@@ -67,13 +87,13 @@ const main = () => {
     );
 
     tick++;
-    if (spriteWidth * tick >= sprite.width) {
+    if (options.width * tick >= sprite.width) {
       tick = 0;
     }
   }
 
 
-  setTimeout(main, timeout);
+  setTimeout(main, 1000 / options.fps);
 };
 
 const init = () => {
@@ -88,5 +108,32 @@ const init = () => {
   });
   main();
 };
+
+const frameWidthElem = document.getElementById('frame-width');
+const frameHeightElem = document.getElementById('frame-height');
+const fpsElem = document.getElementById('fps');
+
+const handleWidthChange = function() {
+  setWidth(frameWidthElem.value);
+};
+const handleHeightChange = function() {
+  setHeight(frameHeightElem.value);
+};
+const handleFPSChange = function() {
+  options.fps = fpsElem.value;
+};
+
+frameWidthElem.value = options.width;
+frameHeightElem.value = options.height;
+fpsElem.value = options.fps;
+
+frameWidthElem.addEventListener('keyup', handleWidthChange);
+frameWidthElem.addEventListener('change', handleWidthChange);
+
+frameHeightElem.addEventListener('keyup', handleHeightChange);
+frameHeightElem.addEventListener('change', handleHeightChange);
+
+fpsElem.addEventListener('keyup', handleFPSChange);
+fpsElem.addEventListener('change', handleFPSChange);
 
 init();

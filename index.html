@@ -7,6 +7,12 @@
       html,
       body {
         background: white;
+        font-family: Arial, sans-serif;
+      }
+
+      label {
+        display: inline-block;
+        width: 100px;
       }
 
       canvas {
@@ -18,6 +24,18 @@
   </head>
   <body>
     <div class="options">
+      <div>
+        <label for="frame-width">Frame width</label>
+        <input id="frame-width" type="number">
+      </div>
+      <div>
+        <label for="frame-height">Frame height</label>
+        <input id="frame-height" type="number">
+      </div>
+      <div>
+        <label for="fps">FPS</label>
+        <input id="fps" type="number">
+      </div>
       <button class="open-file">Open file</button>
     </div>
     <hr>
