@@ -1,4 +1,5 @@
 const storage = require('electron-json-storage');
+const fs = require('fs');
 const {dialog} = require('electron').remote;
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
@@ -16,6 +17,14 @@ canvas.style.width = '128px';
 canvas.style.height = '128px';
 
 let sprite = null;
+let spritePath = null;
+
+const watchFile = (path) => {
+  fs.watchFile(path, () => {
+    console.log('detected file change');
+    loadSprite(path);
+  });
+};
 
 const selectSpriteFile = function() {
   const [path] = dialog.showOpenDialog({
@@ -29,8 +38,14 @@ const selectSpriteFile = function() {
 };
 
 const loadSprite = (path) => {
+  if (spritePath) {
+    fs.unwatchFile(spritePath);
+  }
+  watchFile(path);
+  spritePath = path;
   sprite = new Image();
-  sprite.src = path;
+  // Add a random query string here to act as a cache buster
+  sprite.src = path + '?' + Math.random();
 };
 
 document.querySelector('.open-file').addEventListener('click', selectSpriteFile, false);
