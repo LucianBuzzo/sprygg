@@ -24,12 +24,13 @@ const selectSpriteFile = function() {
 
   console.log(path);
 
+  storage.set('spritePath', path);
+  loadSprite(path);
+};
+
+const loadSprite = (path) => {
   sprite = new Image();
   sprite.src = path;
-  sprite.onload = function() {
-    console.log(sprite.clientWidth);
-    console.log(sprite.clientHeight);
-  };
 };
 
 document.querySelector('.open-file').addEventListener('click', selectSpriteFile, false);
@@ -60,4 +61,17 @@ const main = () => {
   setTimeout(main, timeout);
 };
 
-main();
+const init = () => {
+  storage.get('spritePath', function(error, path) {
+    if (error) {
+      throw error;
+    }
+
+    if (typeof path === 'string') {
+      loadSprite(path);
+    }
+  });
+  main();
+};
+
+init();
