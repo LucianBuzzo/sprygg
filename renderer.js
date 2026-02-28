@@ -51,6 +51,10 @@ const selectSpriteFile = function() {
       properties: ['openFile']
   });
 
+  if (!path) {
+    return;
+  }
+
   console.log(path);
 
   storage.set('spritePath', path);
