@@ -27,16 +27,27 @@ canvas.style.height = options.height * 4 + 'px';
 let sprite = null;
 let spritePath = null;
 
+const toPositiveInt = (value, fallback) => {
+  const parsedValue = parseInt(value, 10);
+  if (!Number.isFinite(parsedValue) || parsedValue <= 0) {
+    return fallback;
+  }
+
+  return parsedValue;
+};
+
 const setWidth = (width) => {
-  options.width = width;
+  options.width = toPositiveInt(width, options.width);
   canvas.width = options.width;
   canvas.style.width = options.width * 4 + 'px';
+  frameWidthElem.value = options.width;
 };
 
 const setHeight = (height) => {
-  options.height = height;
+  options.height = toPositiveInt(height, options.height);
   canvas.height = options.height;
   canvas.style.height = options.height * 4 + 'px';
+  frameHeightElem.value = options.height;
 };
 
 const watchFile = (path) => {
@@ -124,7 +135,8 @@ const handleHeightChange = function() {
   setHeight(frameHeightElem.value);
 };
 const handleFPSChange = function() {
-  options.fps = fpsElem.value;
+  options.fps = toPositiveInt(fpsElem.value, options.fps);
+  fpsElem.value = options.fps;
 };
 
 frameWidthElem.value = options.width;
